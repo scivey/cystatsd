@@ -8,4 +8,5 @@ a.out
 *.egg-info
 .env
 __pycache__
+MANIFEST
 
