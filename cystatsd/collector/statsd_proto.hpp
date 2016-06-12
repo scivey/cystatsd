@@ -10,10 +10,29 @@ enum class MetricType {
   TIMER,
   COUNTER,
   GAUGE,
-  SET,
+
+  // cython has an annoying thing about stack allocation
+  // and default constructors, so we use this to indicate
+  // the default "invalid" state.
   NONE
 };
 
+
+class BufferHandle {
+ protected:
+  char *data_ {nullptr};
+  size_t maxSize_ {0};
+  size_t position_ {0};
+ public:
+  BufferHandle(char*, size_t);
+  void write(const char*, size_t);
+  void write(const std::string&);
+  void clear();
+  void write(BufferHandle*);
+  size_t size() const;
+  const char* data() const;
+  bool empty() const;
+};
 
 class Metric {
  protected:
@@ -23,7 +42,7 @@ class Metric {
  public:
   Metric();
   Metric(MetricType mtype, std::string name, int64_t val);
-  size_t encodeTo(std::ostringstream&);
+  void encodeTo(BufferHandle*);
 };
 
 class SampledMetric {
@@ -36,8 +55,7 @@ class SampledMetric {
   SampledMetric(Metric met, float rate);
   SampledMetric(MetricType met, const std::string &name, int64_t val, float rate);
   SampledMetric(Metric met);
-  std::string encode();
-  size_t encodeTo(std::ostringstream&);
+  void encodeTo(BufferHandle*);
 };
 
 class MetricCollector {
@@ -53,7 +71,6 @@ class MetricCollector {
   void pushTimer(const std::string& name, int64_t value, float rate = 1.0);
   void pushCounter(const std::string& name, int64_t value, float rate = 1.0);
   void pushGauge(const std::string& name, int64_t value, float rate = 1.0);
-  void pushSet(const std::string& name, int64_t value, float rate = 1.0);
 };
 
 

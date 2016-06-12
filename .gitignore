@@ -1,0 +1,11 @@
+build
+*.pyc
+dist
+*.tar.gz
+*.o
+a.out
+*.so
+*.egg-info
+.env
+__pycache__
+
