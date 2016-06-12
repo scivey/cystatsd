@@ -9,6 +9,13 @@ This doesn't make any network calls; it just does encoding.
 This also doesn't currently do anything clever with stats, like collapsing submissions for the same counter.  There's a potential for more optimization there.
 
 ### Install
+
+It requires Cython to build:
+```bash
+pip install cython
+```
+
+Then:
 ```bash
 pip install cystatsd
 ```
