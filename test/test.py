@@ -2,7 +2,7 @@
 # this has to be run in a virtualenv after
 # installing with setup.py, due to need for compilation
 
-from cystatsd.collector.collector import MetricCollector
+from cystatsd import MetricCollector
 import unittest
 
 def encode_timer(name, val, rate=1.0):
