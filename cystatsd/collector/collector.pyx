@@ -1,13 +1,8 @@
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libc.stdio cimport sprintf
-from . cimport cpp_help
-from .cpp_help cimport ostringstream
 
 from .cstatsd_proto cimport MetricCollector as CPPMetricCollector
-#    Metric, MetricType, TIMER, COUNTER, GAUGE, SampledMetric,
-#    MetricCollector as CPPMetricCollector
-#)
 
 __all__ = ('MetricCollector',)
 

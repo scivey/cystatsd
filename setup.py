@@ -16,7 +16,7 @@ STATS_EXT = cythonize(Extension("cystatsd.collector.collector", sources=[
 
 setup(
     name='cystatsd',
-    version='1.0.1',
+    version='1.0.2',
     description="A c++/cython statsd encoder.  It doesn't make any network calls; it just handles batch encoding.",
     classifiers=[
         'License :: OSI Approved :: MIT License',
