@@ -53,7 +53,7 @@ void Metric::encodeTo(BufferHandle *buff) {
   }
   buff->write(name_);
   char intBuff[35];
-  sprintf(intBuff, ":%" PRIu64 "|", value_);
+  sprintf(intBuff, ":%" PRId64 "|", value_);
   buff->write(intBuff, strlen(intBuff));
   switch (metricType_) {
     case MetricType::COUNTER:
