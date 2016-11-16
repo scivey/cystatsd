@@ -40,10 +40,24 @@ cdef class MetricCollector:
     cpdef _push_gauge(self, bytes name, int value, float rate=1.0):
         self.collector.pushGauge(name, value, rate)
 
-    def push_gauge(self, name, int value, float rate=1.0):
+    cpdef _push_gauge_delta(self, bytes name, int value, float rate=1.0):
+        self.collector.pushGaugeDelta(name, value, rate)
+
+    def push_gauge(self, name, int value, float rate=1.0, delta = False):
         if isinstance(name, UNICODE_TYPE):
             name = name.encode('utf-8')
-        self._push_gauge(name, value, rate)
+        if delta: 
+            self._push_gauge_delta(name, value, rate)
+        else:
+            self._push_gauge(name, value, rate)
+
+    cpdef _push_set(self, bytes name, int value, float rate=1.0):
+        self.collector.pushSet(name, value, rate)
+
+    def push_set(self, name, int value, float rate=1.0):
+        if isinstance(name, UNICODE_TYPE):
+            name = name.encode('utf-8')
+        self._push_set(name, value, rate)
 
     def flush(self):
         cdef vector[string] flushed = self.collector.flush()
