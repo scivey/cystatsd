@@ -19,9 +19,16 @@ def encode_counter(name, val, rate=1.0):
     assert len(result) == 1
     return result[0]
 
-def encode_gauge(name, val, rate=1.0):
+def encode_gauge(name, val, rate=1.0, delta=False):
     collector = MetricCollector()
-    collector.push_gauge(name, val, rate)
+    collector.push_gauge(name, val, rate, delta)
+    result = list(collector.flush())
+    assert len(result) == 1
+    return result[0]
+
+def encode_set(name, val, rate=1.0):
+    collector = MetricCollector()
+    collector.push_set(name, val, rate)
     result = list(collector.flush())
     assert len(result) == 1
     return result[0]
@@ -40,8 +47,15 @@ class BasicCollectorTests(unittest.TestCase):
 
     def test_gauge(self):
         self.assertEqual(b"foo:200|g", encode_gauge("foo", 200))
+        self.assertEqual(b"foo:+200|g", encode_gauge("foo", 200, delta=True))
+        self.assertEqual(b"foo:-200|g", encode_gauge("foo", -200, delta=True))
         self.assertEqual(b"bar:215|g|@0.50", encode_gauge("bar", 215, 0.5))
         self.assertEqual(b"bar:215|g", encode_gauge("bar", 215, 1.5))
+
+    def test_set(self):
+        self.assertEqual(b"foo:200|s", encode_set("foo", 200))
+        self.assertEqual(b"bar:215|s|@0.50", encode_set("bar", 215, 0.5))
+        self.assertEqual(b"bar:215|s", encode_set("bar", 215, 1.5))
 
 class BatchingTests(unittest.TestCase):
     def test_batching_1(self):
