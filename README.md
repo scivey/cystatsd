@@ -37,5 +37,9 @@ Outputs:
 [b"some_timer:200|ms\ndogs:2|c\nfish:5|c|@0.10"]
 ```
 
+### Contributors
+* @leftys added support for set types, gauge deltas and counter decrements. (1.1.0)
+* @scivey initial implementation
+
 ### License
 MIT

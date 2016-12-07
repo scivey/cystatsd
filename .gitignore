@@ -9,4 +9,5 @@ a.out
 .env
 __pycache__
 MANIFEST
-
+*.sublime-workspace
+.envrc-extra
