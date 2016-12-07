@@ -9,4 +9,4 @@ test: clean
 	cd test && nosetests test.py
 
 release: clean
-    python setup.py sdist upload -r pypi
+	python setup.py sdist upload -r pypi
