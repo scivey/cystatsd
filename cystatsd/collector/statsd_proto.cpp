@@ -53,17 +53,25 @@ void Metric::encodeTo(BufferHandle *buff) {
   }
   buff->write(name_);
   char intBuff[35];
-  sprintf(intBuff, ":%" PRIu64 "|", value_);
+  if (metricType_ == MetricType::GAUGE_DELTA) {
+    sprintf(intBuff, ":%+" PRId64 "|", value_);
+  } else {
+    sprintf(intBuff, ":%" PRId64 "|", value_);
+  }
   buff->write(intBuff, strlen(intBuff));
   switch (metricType_) {
     case MetricType::COUNTER:
       buff->write("c", 1);
       break;
     case MetricType::GAUGE:
+    case MetricType::GAUGE_DELTA:
       buff->write("g", 1);
       break;
     case MetricType::TIMER:
       buff->write("ms", 2);
+      break;
+    case MetricType::SET:
+      buff->write("s", 1);
       break;
     case MetricType::NONE:
       ; // we already checked for this earlier, but clang doesn't know that.
@@ -170,6 +178,13 @@ void MetricCollector::pushGauge(const string& name, int64_t val, float rate) {
   metrics_.emplace_back(MetricType::GAUGE, name, val, rate);
 }
 
+void MetricCollector::pushGaugeDelta(const string& name, int64_t val, float rate) {
+  metrics_.emplace_back(MetricType::GAUGE_DELTA, name, val, rate);
+}
+
+void MetricCollector::pushSet(const string& name, int64_t val, float rate) {
+  metrics_.emplace_back(MetricType::SET, name, val, rate);
+}
 
 
 } // statsd_proto

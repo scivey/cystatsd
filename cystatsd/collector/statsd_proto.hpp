@@ -10,6 +10,8 @@ enum class MetricType {
   TIMER,
   COUNTER,
   GAUGE,
+  GAUGE_DELTA,
+  SET,
 
   // cython has an annoying thing about stack allocation
   // and default constructors, so we use this to indicate
@@ -71,6 +73,8 @@ class MetricCollector {
   void pushTimer(const std::string& name, int64_t value, float rate = 1.0);
   void pushCounter(const std::string& name, int64_t value, float rate = 1.0);
   void pushGauge(const std::string& name, int64_t value, float rate = 1.0);
+  void pushGaugeDelta(const std::string& name, int64_t value, float rate = 1.0);
+  void pushSet(const std::string& name, int64_t value, float rate = 1.0);
 };
 
 
