@@ -44,8 +44,20 @@ const char* BufferHandle::data() const {
 
 
 Metric::Metric(){}
+
+Metric::Metric(const Metric & met)
+  : metricType_(met.metricType_), name_(met.name_), value_(met.value_) {}
+
 Metric::Metric(MetricType mtype, std::string name, int64_t val)
   : metricType_(mtype), name_(name), value_(val) {}
+
+void Metric::formatValue(char * buffer) const {
+  if (metricType_ == MetricType::GAUGE_DELTA) {
+    sprintf(buffer, ":%+" PRId64 "|", value_);
+  } else {
+    sprintf(buffer, ":%" PRId64 "|", value_);
+  }
+}
 
 void Metric::encodeTo(BufferHandle *buff) {
   if (metricType_ == MetricType::NONE) {
@@ -53,11 +65,7 @@ void Metric::encodeTo(BufferHandle *buff) {
   }
   buff->write(name_);
   char intBuff[35];
-  if (metricType_ == MetricType::GAUGE_DELTA) {
-    sprintf(intBuff, ":%+" PRId64 "|", value_);
-  } else {
-    sprintf(intBuff, ":%" PRId64 "|", value_);
-  }
+  this->formatValue(intBuff);
   buff->write(intBuff, strlen(intBuff));
   switch (metricType_) {
     case MetricType::COUNTER:
@@ -78,28 +86,74 @@ void Metric::encodeTo(BufferHandle *buff) {
   }
 }
 
+MetricType Metric::getMetricType() const {
+  return metricType_;
+}
 
 
-SampledMetric::SampledMetric(Metric met): metric_(met) {}
-SampledMetric::SampledMetric(Metric met, float rate)
-  : metric_(met), rate_(rate) {}
+FloatMetric::FloatMetric(const FloatMetric & met) : Metric(met), floatValue_(met.floatValue_) {}
 
-SampledMetric::SampledMetric(MetricType mtype,
-    const string& name, int64_t value, float rate)
-  : metric_(mtype, name, value), rate_(rate) {}
+FloatMetric::FloatMetric(MetricType mtype, std::string name, float val)
+  : Metric(mtype, name, 0), floatValue_(val) {}
 
-SampledMetric::SampledMetric() {}
+void FloatMetric::formatValue(char * buffer) const {
+  if (metricType_ == MetricType::GAUGE_DELTA) {
+    sprintf(buffer, ":%+.6f|", floatValue_);
+  } else {
+    sprintf(buffer, ":%.6f|", floatValue_);
+  }
+}
+
+
+SampledMetric::~SampledMetric() {
+  if (metric_ != NULL) {
+    delete metric_;
+    metric_ = NULL;
+  }
+}
+
+SampledMetric::SampledMetric(const SampledMetric & met) : rate_(met.rate_) {
+  if (met.metric_ != NULL) {
+    switch (met.metric_->getMetricType()) {
+      case MetricType::COUNTER:
+      case MetricType::SET:
+        metric_ = new Metric(*met.metric_);
+        break;
+
+      case MetricType::GAUGE:
+      case MetricType::GAUGE_DELTA:
+      case MetricType::TIMER:
+        metric_ = new FloatMetric(*((FloatMetric*)met.metric_));
+        break;
+
+      case MetricType::NONE:
+        metric_ = NULL;
+    }
+  }
+}
+
+SampledMetric::SampledMetric(MetricType mtype, const string& name, int64_t value, float rate) : metric_(NULL), rate_(rate) {
+  metric_ = new Metric(mtype, name, value);
+}
+
+SampledMetric::SampledMetric(MetricType mtype, const string& name, float value, float rate) : metric_(NULL), rate_(rate) {
+  metric_ = new FloatMetric(mtype, name, value);
+}
+
+SampledMetric::SampledMetric() : metric_(NULL) {}
 
 bool SampledMetric::isSampled() const {
   return rate_ < 1.0;
 }
 
 void SampledMetric::encodeTo(BufferHandle *buff) {
-  metric_.encodeTo(buff);
-  if (isSampled()) {
-    char rateBuff[8];
-    sprintf(rateBuff, "|@%.2f", rate_);
-    buff->write(rateBuff, strlen(rateBuff));
+  if (metric_ != NULL) {
+	  metric_->encodeTo(buff);
+	  if (isSampled()) {
+		char rateBuff[8];
+		sprintf(rateBuff, "|@%.2f", rate_);
+		buff->write(rateBuff, strlen(rateBuff));
+	  }
   }
 }
 

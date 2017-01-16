@@ -41,22 +41,39 @@ class Metric {
   MetricType metricType_ {MetricType::NONE};
   std::string name_ {""};
   int64_t value_ {0};
+
+  virtual void formatValue(char * buffer) const;
  public:
   Metric();
+  Metric(const Metric & met);
+  virtual ~Metric() {};
   Metric(MetricType mtype, std::string name, int64_t val);
   void encodeTo(BufferHandle*);
+  MetricType getMetricType() const;
+};
+
+class FloatMetric : public Metric {
+ protected:
+  float floatValue_ {0};
+
+  void formatValue(char * buffer) const;
+ public:
+  FloatMetric(const FloatMetric & met);
+  FloatMetric(MetricType mtype, std::string name, float val);
+  virtual ~FloatMetric() {};
 };
 
 class SampledMetric {
  protected:
-  Metric metric_;
+  Metric * metric_;
   float rate_ {1.0};
  public:
-  SampledMetric();
+  explicit SampledMetric();
+  virtual ~SampledMetric();
   bool isSampled() const;
-  SampledMetric(Metric met, float rate);
+  SampledMetric(const SampledMetric & met);
   SampledMetric(MetricType met, const std::string &name, int64_t val, float rate);
-  SampledMetric(Metric met);
+  SampledMetric(MetricType met, const std::string &name, float val, float rate);
   void encodeTo(BufferHandle*);
 };
 
