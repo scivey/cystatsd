@@ -21,10 +21,10 @@ cdef class MetricCollector:
     def __init__(self, int mtu=512):
         self.collector = CPPMetricCollector(mtu)
 
-    cpdef _push_timer(self, bytes name, int value, float rate):
+    cpdef _push_timer(self, bytes name, float value, float rate):
         self.collector.pushTimer(name, value, rate)
 
-    def push_timer(self, name, int value, float rate=1.0):
+    def push_timer(self, name, float value, float rate=1.0):
         if isinstance(name, UNICODE_TYPE):
             name = name.encode('utf-8')
         self._push_timer(name, value, rate)
@@ -37,13 +37,13 @@ cdef class MetricCollector:
             name = name.encode('utf-8')
         self._push_counter(name, value, rate)
 
-    cpdef _push_gauge(self, bytes name, int value, float rate=1.0):
+    cpdef _push_gauge(self, bytes name, float value, float rate=1.0):
         self.collector.pushGauge(name, value, rate)
 
-    cpdef _push_gauge_delta(self, bytes name, int value, float rate=1.0):
+    cpdef _push_gauge_delta(self, bytes name, float value, float rate=1.0):
         self.collector.pushGaugeDelta(name, value, rate)
 
-    def push_gauge(self, name, int value, float rate=1.0, delta = False):
+    def push_gauge(self, name, float value, float rate=1.0, delta = False):
         if isinstance(name, UNICODE_TYPE):
             name = name.encode('utf-8')
         if delta: 

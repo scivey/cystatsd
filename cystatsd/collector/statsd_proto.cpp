@@ -166,7 +166,7 @@ std::vector<std::string> MetricCollector::flush() {
   return result;
 }
 
-void MetricCollector::pushTimer(const string& name, int64_t val, float rate) {
+void MetricCollector::pushTimer(const string& name, float val, float rate) {
   metrics_.emplace_back(MetricType::TIMER, name, val, rate);
 }
 
@@ -174,11 +174,11 @@ void MetricCollector::pushCounter(const string& name, int64_t val, float rate) {
   metrics_.emplace_back(MetricType::COUNTER, name, val, rate);
 }
 
-void MetricCollector::pushGauge(const string& name, int64_t val, float rate) {
+void MetricCollector::pushGauge(const string& name, float val, float rate) {
   metrics_.emplace_back(MetricType::GAUGE, name, val, rate);
 }
 
-void MetricCollector::pushGaugeDelta(const string& name, int64_t val, float rate) {
+void MetricCollector::pushGaugeDelta(const string& name, float val, float rate) {
   metrics_.emplace_back(MetricType::GAUGE_DELTA, name, val, rate);
 }
 

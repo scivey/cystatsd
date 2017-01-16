@@ -70,10 +70,10 @@ class MetricCollector {
   size_t count() const;
   bool empty() const;
   std::vector<std::string> flush();
-  void pushTimer(const std::string& name, int64_t value, float rate = 1.0);
+  void pushTimer(const std::string& name, float value, float rate = 1.0);
   void pushCounter(const std::string& name, int64_t value, float rate = 1.0);
-  void pushGauge(const std::string& name, int64_t value, float rate = 1.0);
-  void pushGaugeDelta(const std::string& name, int64_t value, float rate = 1.0);
+  void pushGauge(const std::string& name, float value, float rate = 1.0);
+  void pushGaugeDelta(const std::string& name, float value, float rate = 1.0);
   void pushSet(const std::string& name, int64_t value, float rate = 1.0);
 };
 
