@@ -1,4 +1,8 @@
-from Cython.Build import cythonize
+try:
+    from Cython.Build import cythonize
+except ImportError:
+    cythonize = lambda ext: [ext]
+
 from distutils.core import setup, Extension
 
 OPTIMIZED = '-O2'
