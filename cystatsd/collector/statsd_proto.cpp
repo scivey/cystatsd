@@ -1,5 +1,7 @@
 #include "statsd_proto.hpp"
 #include <cstring>
+
+#define __STDC_FORMAT_MACROS 1
 #include <inttypes.h>
 
 using namespace std;
