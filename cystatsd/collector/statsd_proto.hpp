@@ -40,10 +40,10 @@ class Metric {
  protected:
   MetricType metricType_ {MetricType::NONE};
   std::string name_ {""};
-  int64_t value_ {0};
+  long long int value_ {0};
  public:
   Metric();
-  Metric(MetricType mtype, std::string name, int64_t val);
+  Metric(MetricType mtype, std::string name, long long int val);
   void encodeTo(BufferHandle*);
 };
 
@@ -55,7 +55,7 @@ class SampledMetric {
   SampledMetric();
   bool isSampled() const;
   SampledMetric(Metric met, float rate);
-  SampledMetric(MetricType met, const std::string &name, int64_t val, float rate);
+  SampledMetric(MetricType met, const std::string &name, long long int val, float rate);
   SampledMetric(Metric met);
   void encodeTo(BufferHandle*);
 };
@@ -70,11 +70,11 @@ class MetricCollector {
   size_t count() const;
   bool empty() const;
   std::vector<std::string> flush();
-  void pushTimer(const std::string& name, int64_t value, float rate = 1.0);
-  void pushCounter(const std::string& name, int64_t value, float rate = 1.0);
-  void pushGauge(const std::string& name, int64_t value, float rate = 1.0);
-  void pushGaugeDelta(const std::string& name, int64_t value, float rate = 1.0);
-  void pushSet(const std::string& name, int64_t value, float rate = 1.0);
+  void pushTimer(const std::string& name, long long int value, float rate = 1.0);
+  void pushCounter(const std::string& name, long long int value, float rate = 1.0);
+  void pushGauge(const std::string& name, long long int value, float rate = 1.0);
+  void pushGaugeDelta(const std::string& name, long long int value, float rate = 1.0);
+  void pushSet(const std::string& name, long long int value, float rate = 1.0);
 };
 
 
