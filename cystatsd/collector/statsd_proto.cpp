@@ -44,7 +44,7 @@ const char* BufferHandle::data() const {
 
 
 Metric::Metric(){}
-Metric::Metric(MetricType mtype, std::string name, int64_t val)
+Metric::Metric(MetricType mtype, std::string name, long long int val)
   : metricType_(mtype), name_(name), value_(val) {}
 
 void Metric::encodeTo(BufferHandle *buff) {
@@ -85,7 +85,7 @@ SampledMetric::SampledMetric(Metric met, float rate)
   : metric_(met), rate_(rate) {}
 
 SampledMetric::SampledMetric(MetricType mtype,
-    const string& name, int64_t value, float rate)
+    const string& name, long long int value, float rate)
   : metric_(mtype, name, value), rate_(rate) {}
 
 SampledMetric::SampledMetric() {}
@@ -166,23 +166,23 @@ std::vector<std::string> MetricCollector::flush() {
   return result;
 }
 
-void MetricCollector::pushTimer(const string& name, int64_t val, float rate) {
+void MetricCollector::pushTimer(const string& name, long long int val, float rate) {
   metrics_.emplace_back(MetricType::TIMER, name, val, rate);
 }
 
-void MetricCollector::pushCounter(const string& name, int64_t val, float rate) {
+void MetricCollector::pushCounter(const string& name, long long int val, float rate) {
   metrics_.emplace_back(MetricType::COUNTER, name, val, rate);
 }
 
-void MetricCollector::pushGauge(const string& name, int64_t val, float rate) {
+void MetricCollector::pushGauge(const string& name, long long int val, float rate) {
   metrics_.emplace_back(MetricType::GAUGE, name, val, rate);
 }
 
-void MetricCollector::pushGaugeDelta(const string& name, int64_t val, float rate) {
+void MetricCollector::pushGaugeDelta(const string& name, long long int val, float rate) {
   metrics_.emplace_back(MetricType::GAUGE_DELTA, name, val, rate);
 }
 
-void MetricCollector::pushSet(const string& name, int64_t val, float rate) {
+void MetricCollector::pushSet(const string& name, long long int val, float rate) {
   metrics_.emplace_back(MetricType::SET, name, val, rate);
 }
 
